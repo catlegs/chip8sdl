@@ -1,0 +1,77 @@
+CHIP-8 SDL by Ross Keenum (rosskeenum@gmail.com)
+Last edited Sept. 25, 2012
+
+
+Overview
+--------
+CHIP-8 SDL is a CHIP-8/SCHIP cross-platform interpreter/emulator written in C utilizing SDL for input and
+media output.
+
+
+Project History
+---------------
+Sept. 25, 2012
+   Initial release (0.1b).
+
+
+Command-line Usage
+--------------------
+usage: chip8sdl [--scale=<int>] [--freq=<int>] [--background=<int>] [--foreground=<int>] [--help] [<file>]
+
+  --scale=<int>       set how much to scale the video (default 4)
+  --freq=<int>        set how many instructions per second (default 800)
+  --background=<int>  set background color in format 0xRRGGBB (default 0x000000)
+  --foreground=<int>  set foreground color in format 0xRRGGBB (default 0xFFFFFF)
+  --help              print this help and exit
+  <file>              input file (game)
+
+
+Controls
+--------
+Computers running CHIP-8 originally used a 16-key hexidecimal
+keypad laid out like:
+
+1 2 3 C
+4 5 6 D
+7 8 9 E
+A 0 B F
+
+which is mapped to the keyboard like this
+
+1 2 3 4
+q w e r
+a s d f
+z x c v
+
+The Esc key can be pressed at any time to exit CHIP-8 SDL.
+
+
+Compiling
+---------
+Dependencies
+   argtable2 SDL
+
+Compilation procedure
+   ./configure
+   make
+
+This will create an executable called chip8sdl
+
+
+License and Copyright
+---------------------
+CHIP-8 SDL is released under the X11 license (also known as the MIT license) and Copyright (c) 2012 Ross Keenum.
+See LICENSE for details.
+
+SDL and argtable2 are released under the LGPL license.  See LICENSE-LGPL-3.0 for details.
+note: Releases of win32 binaries are statically linked.
+
+
+Links
+-----
+http://www.chip8.com
+   CHIP-8 information and downloads.
+
+http://sourceforge.net/projects/chip8sdl
+   Project web site.  The CHIP-8 ROM pack from chip8.com is available here as well.
+

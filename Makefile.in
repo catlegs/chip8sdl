@@ -1,0 +1,29 @@
+OBJS = chip8video.o chip8.o main.o
+CC = gcc
+CFLAGS = -Wall -c
+LFLAGS = -Wall -lSDLmain -lSDL -largtable2
+
+
+# link the executable
+chip8sdl: $(OBJS)
+	$(CC) $(OBJS) $(LFLAGS) -o chip8sdl
+
+
+# individual object files
+chip8video.o: chip8video.c chip8video.h
+	$(CC) $(CFLAGS) chip8video.c
+
+chip8.o: chip8.c chip8.h chip8video.h
+	$(CC) $(CFLAGS) chip8.c
+
+main.o: main.c chip8.h chip8video.h
+	$(CC) $(CFLAGS) main.c
+
+
+# declare clean as a phony target
+.PHONY: clean
+
+
+# remove object files
+clean:
+	rm *.o chip8sdl
