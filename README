@@ -1,5 +1,5 @@
 CHIP-8 SDL by Ross Keenum (rosskeenum@gmail.com)
-Last edited Sept. 25, 2012
+Last edited Dec. 09, 2014
 
 
 Overview
@@ -12,6 +12,11 @@ Project History
 ---------------
 Sept. 25, 2012
    Initial release (0.1b).
+
+Dec. 09, 2014
+   Removed configure script and any autoconf files.
+   Edited makefile to use a directory tree of src, obj, and bin.
+   No code changes.
 
 
 Command-line Usage
@@ -52,10 +57,9 @@ Dependencies
    argtable2 SDL
 
 Compilation procedure
-   ./configure
    make
 
-This will create an executable called chip8sdl
+This will create an executable called chip8sdl in the bin directory
 
 
 License and Copyright
