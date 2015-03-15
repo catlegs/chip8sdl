@@ -6,10 +6,10 @@
 TEST_CASE("Chip8Memory/constructor") {
 	Chip8Memory obj;
 
-	for (int i = 0; i < Chip8MemorySize; ++i) {
-		u8 result = obj.readByte(i);
-		REQUIRE(result == 0);
-	}
+	// assert that first and last memory
+	//   location are set to zero
+	REQUIRE(obj.readByte(0) == 0);
+	REQUIRE(obj.readByte(Chip8MemorySize - 1) == 0);
 }
 
 TEST_CASE("Chip8Memory/readByte") {
