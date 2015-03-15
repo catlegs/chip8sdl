@@ -3,9 +3,9 @@
 #include <thread>
 
 // invokes a passed in function at the specified times per second until it returns false
-void invokeFuncAtInterval(std::function<bool()> func, long timesPerSecond) {
+void invokeFuncAtInterval(std::function<bool()> func, unsigned long timesPerSecond) {
 	// get the duration between the invocations in nanoseconds
-	std::chrono::nanoseconds interval(1000000000L / timesPerSecond);
+	std::chrono::nanoseconds interval(1000000000ULL / timesPerSecond);
 
 	// priming read for the next invocation of the function
 	auto nextInvocation = std::chrono::high_resolution_clock::now();
