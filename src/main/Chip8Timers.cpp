@@ -62,6 +62,7 @@ void Chip8Timers::stopTimers() {
 			runThread = false;
 			// wait for the thread to complete
 			timerThread->join();
+            delete timerThread;
 		}
 	}
 
