@@ -1,27 +1,38 @@
-OBJS = $(OBJDIR)/chip8video.o $(OBJDIR)/chip8.o $(OBJDIR)/main.o
-CC = gcc
-CFLAGS = -Wall -c
-LFLAGS = -Wall -lSDLmain -lSDL -largtable2
+OBJS = $(OBJDIR)/Chip8Common.o $(OBJDIR)/Chip8Manager.o $(OBJDIR)/Chip8Memory.o $(OBJDIR)/Chip8Timers.o
+CC = g++
+CFLAGS = -Wall -std=c++11 -c
+# LFLAGS = -Wall -lSDLmain -lSDL -largtable2
+TESTCFLAGS = -Wall -std=c++11 -lpthread -I$(SRCDIR)
 BINDIR = bin
-SRCDIR = src
+SRCDIR = src/main
+TESTSRCDIR = src/test
 OBJDIR = obj
-MAINEXE = $(BINDIR)/chip8sdl
+#MAINEXE = $(BINDIR)/chip8sdl
+TESTEXE = $(BINDIR)/chip8tests
 
 
 # link the executable
-chip8sdl: $(OBJS) $(BINDIR)
-	$(CC) $(OBJS) $(LFLAGS) -o $(MAINEXE)
+#chip8sdl: $(OBJS) $(BINDIR)
+#	$(CC) $(OBJS) $(LFLAGS) -o $(MAINEXE)
 
-
+# build the test executable
+$(TESTEXE): $(OBJS) $(BINDIR)
+	$(CC) $(TESTSRCDIR)/*.cpp $(OBJS) $(TESTCFLAGS) -o $(TESTEXE)
+    
 # individual object files
-$(OBJDIR)/chip8video.o: $(SRCDIR)/chip8video.c $(SRCDIR)/chip8video.h $(OBJDIR)
-	$(CC) $(CFLAGS) $(SRCDIR)/chip8video.c -o $(OBJDIR)/chip8video.o
+$(OBJDIR)/Chip8Common.o: $(SRCDIR)/Chip8Common.cpp $(SRCDIR)/Chip8Common.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Common.cpp -o $(OBJDIR)/Chip8common.o
 
-$(OBJDIR)/chip8.o: $(SRCDIR)/chip8.c $(SRCDIR)/chip8.h $(SRCDIR)/chip8video.h $(OBJDIR)
-	$(CC) $(CFLAGS) $(SRCDIR)/chip8.c -o $(OBJDIR)/chip8.o
+$(OBJDIR)/Chip8Memory.o: $(SRCDIR)/Chip8Memory.cpp $(SRCDIR)/Chip8Memory.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Memory.cpp -o $(OBJDIR)/Chip8Memory.o
 
-$(OBJDIR)/main.o: $(SRCDIR)/main.c $(SRCDIR)/chip8.h $(SRCDIR)/chip8video.h $(OBJDIR)
-	$(CC) $(CFLAGS) $(SRCDIR)/main.c -o $(OBJDIR)/main.o
+$(OBJDIR)/Chip8Manager.o: $(SRCDIR)/Chip8Manager.cpp $(SRCDIR)/Chip8Manager.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Manager.cpp -o $(OBJDIR)/Chip8Manager.o
+    
+$(OBJDIR)/Chip8Timers.o: $(SRCDIR)/Chip8Timers.cpp $(SRCDIR)/Chip8Timers.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Timers.cpp -o $(OBJDIR)/Chip8Timers.o
+    
+
 
 $(BINDIR):
 	mkdir $(BINDIR)
@@ -29,9 +40,16 @@ $(BINDIR):
 $(OBJDIR):
 	mkdir $(OBJDIR)
 
+
 # declare clean as a phony target
 .PHONY: clean
 
 # clean
 clean:
-	rm $(OBJS) $(MAINEXE) && rmdir $(OBJDIR) $(BINDIR)
+	rm $(OBJS) $(TESTEXE) && rmdir $(OBJDIR) $(BINDIR)
+
+.PHONY: test
+
+# run the unit tests
+test:
+	$(TESTEXE)

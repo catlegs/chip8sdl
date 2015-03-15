@@ -14,7 +14,7 @@ u8 Chip8Memory::readByte(u16 address) {
 	//   if out of bounds, return NULL
 	return address < Chip8MemorySize ?
 		memory[address] :
-		NULL;
+		0;
 }
 
 bool Chip8Memory::writeByte(u16 address, u8 value) {
@@ -32,7 +32,7 @@ bool Chip8Memory::writeByte(u16 address, u8 value) {
 u16 Chip8Memory::readWord(u16 address) {
 	return address < Chip8MemorySize - 1 ?
 		u16((memory[address] << 8) | memory[address + 1]) :
-		NULL;
+		0;
 }
 
 bool Chip8Memory::writeWord(u16 address, u16 value) {

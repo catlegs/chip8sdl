@@ -6,7 +6,7 @@
 TEST_CASE("Chip8Memory/constructor") {
 	Chip8Memory obj;
 
-	for (u16 i = 0; i < Chip8MemorySize; ++i) {
+	for (int i = 0; i < Chip8MemorySize; ++i) {
 		u8 result = obj.readByte(i);
 		REQUIRE(result == 0);
 	}
@@ -15,9 +15,9 @@ TEST_CASE("Chip8Memory/constructor") {
 TEST_CASE("Chip8Memory/readByte") {
 	Chip8Memory obj;
 
-	SECTION("out of bounds, should return NULL") {
+	SECTION("out of bounds, should return 0") {
 		// fill memory with 0x1F
-		for (u16 i = 0; i < Chip8MemorySize; ++i) {
+		for (int i = 0; i < Chip8MemorySize; ++i) {
 			obj.writeByte(i, 0x1F);
 		}
 
@@ -25,7 +25,7 @@ TEST_CASE("Chip8Memory/readByte") {
 		u8 result = obj.readByte(Chip8MemorySize);
 
 		// assert
-		REQUIRE(result == NULL);
+		REQUIRE(result == 0);
 	}
 
 	SECTION("in bounds, should return 0x1C") {
@@ -64,9 +64,9 @@ TEST_CASE("Chip8Memory/writeByte") {
 TEST_CASE("Chip8Memory/readWord") {
 	Chip8Memory obj;
 
-	SECTION("out of bounds, should return NULL") {
+	SECTION("out of bounds, should return 0") {
 		// fill memory with 0x1F
-		for (u16 i = 0; i < Chip8MemorySize; ++i) {
+		for (int i = 0; i < Chip8MemorySize; ++i) {
 			obj.writeByte(i, 0x1F);
 		}
 
@@ -74,7 +74,7 @@ TEST_CASE("Chip8Memory/readWord") {
 		u16 result = obj.readWord(Chip8MemorySize - 1);
 
 		// assert
-		REQUIRE(result == NULL);
+		REQUIRE(result == 0);
 	}
 
 	SECTION("in bounds, should return 0xDEAD") {
