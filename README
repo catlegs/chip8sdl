@@ -1,10 +1,10 @@
 CHIP-8 SDL by Ross Keenum (rosskeenum@gmail.com)
-Last edited Dec. 09, 2014
+Last edited Mar. 15, 2015
 
 
 Overview
 --------
-CHIP-8 SDL is a CHIP-8/SCHIP cross-platform interpreter/emulator written in C utilizing SDL for input and
+CHIP-8 SDL is a CHIP-8/SCHIP cross-platform interpreter/emulator written in C++11 utilizing SDL for input and
 media output.
 
 
@@ -18,8 +18,11 @@ Dec. 09, 2014
    Edited makefile to use a directory tree of src, obj, and bin.
    No code changes.
 
-
-Command-line Usage
+Mar. 15, 2015
+   Merged in development branch with the beginnings of a rewrite of the program
+   to C++11. Emulator is not in a usable state yet, but there are some unit tests.
+   
+Command-line Usage (not currently supported)
 --------------------
 usage: chip8sdl [--scale=<int>] [--freq=<int>] [--background=<int>] [--foreground=<int>] [--help] [<file>]
 
@@ -31,7 +34,7 @@ usage: chip8sdl [--scale=<int>] [--freq=<int>] [--background=<int>] [--foregroun
   <file>              input file (game)
 
 
-Controls
+Controls (not currently supported)
 --------
 Computers running CHIP-8 originally used a 16-key hexidecimal
 keypad laid out like:
@@ -54,18 +57,26 @@ The Esc key can be pressed at any time to exit CHIP-8 SDL.
 Compiling
 ---------
 Dependencies
-   argtable2 SDL
+   g++ 4.7 or later (for -std=c++11 argument).
+   g++ 4.3 may work as well (with -std=c++0x argument)
 
 Compilation procedure
    make
 
-This will create an executable called chip8sdl in the bin directory
+This will create an executable called chip8tests in the bin directory.
+
+Running 'make test' will execute the unit tests.
 
 
 License and Copyright
 ---------------------
-CHIP-8 SDL is released under the X11 license (also known as the MIT license) and Copyright (c) 2012 Ross Keenum.
+CHIP-8 SDL is released under the X11 license (also known as the MIT license) and Copyright (c) 2015 Ross Keenum.
 See LICENSE for details.
+
+Catch is included in the test folder, and is distributed under the Boost Software License version 1.0.
+See LICENSE_BOOST_1_0 for details.
+Check it out! it is a fantastic project.
+https://github.com/philsquared/Catch
 
 SDL and argtable2 are released under the LGPL license.  See LICENSE-LGPL-3.0 for details.
 note: Releases of win32 binaries are statically linked.
@@ -78,4 +89,5 @@ http://www.chip8.com
 
 http://sourceforge.net/projects/chip8sdl
    Project web site.  The CHIP-8 ROM pack from chip8.com is available here as well.
+   A Win32 statically linked binary of the 0.1b is available there as well.
 
