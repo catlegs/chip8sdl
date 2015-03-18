@@ -24,6 +24,7 @@ SOFTWARE.
 #include <cinttypes>
 #include <functional>
 
+// define width-based integer types
 typedef uint_least8_t u8;
 typedef int_least8_t s8;
 typedef uint_least16_t u16;
@@ -32,6 +33,13 @@ typedef uint_least32_t u32;
 typedef int_least32_t s32;
 
 // invokes a passed in function at the specified times per second until it returns false
+// should ALWAYS be passed into a thread
 void invokeFuncAtInterval(std::function<bool()> func, unsigned long timesPerSecond);
+
+// functions for woking with bytes, words, and nibbles
+inline u8 getHighNibble(u8 byte) { return byte >> 4; }
+inline u8 getLowNibble(u8 byte) { return byte & 0xF; }
+inline u8 getHighByte(u16 word) { return word >> 8; }
+inline u8 getLowByte(u16 word) { return word & 0xFF; }
 
 #endif // CHIP8COMMON
