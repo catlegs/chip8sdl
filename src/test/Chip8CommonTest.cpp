@@ -64,3 +64,30 @@ TEST_CASE("Chip8Common/invokeFuncAtInterval", "[threading]") {
 		REQUIRE(testFuncCountVal == 2);
 	}
 }
+
+TEST_CASE("Chip8Common/byteWordAndNibbleOperations", "[inline]") {
+
+	SECTION("getHighNibble") {
+		u8 result = getHighNibble(0xDE);
+
+		REQUIRE(result == 0xD);
+	}
+
+	SECTION("getLowNibble") {
+		u8 result = getLowNibble(0xDE);
+
+		REQUIRE(result == 0xE);
+	}
+
+	SECTION("getHighByte") {
+		u8 result = getHighByte(0xDEAD);
+
+		REQUIRE(result == 0xDE);
+	}
+
+	SECTION("getLowByte") {
+		u8 result = getLowByte(0xDEAD);
+
+		REQUIRE(result == 0xAD);
+	}
+}
