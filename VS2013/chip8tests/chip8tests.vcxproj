@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\test\Chip8CommonTest.cpp" />
+    <ClCompile Include="..\..\src\test\Chip8CpuTest.cpp" />
     <ClCompile Include="..\..\src\test\Chip8MemoryTest.cpp" />
     <ClCompile Include="..\..\src\test\Chip8TestSuite.cpp" />
     <ClCompile Include="..\..\src\test\Chip8TimersTest.cpp" />

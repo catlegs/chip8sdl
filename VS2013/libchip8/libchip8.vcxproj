@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main\Chip8Common.cpp" />
+    <ClCompile Include="..\..\src\main\Chip8Cpu.cpp" />
     <ClCompile Include="..\..\src\main\Chip8Manager.cpp" />
     <ClCompile Include="..\..\src\main\Chip8Memory.cpp" />
     <ClCompile Include="..\..\src\main\Chip8Timers.cpp" />

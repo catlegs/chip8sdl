@@ -1,4 +1,4 @@
-OBJS = $(OBJDIR)/Chip8Common.o $(OBJDIR)/Chip8Manager.o $(OBJDIR)/Chip8Memory.o $(OBJDIR)/Chip8Timers.o
+OBJS = $(OBJDIR)/Chip8Common.o $(OBJDIR)/Chip8Manager.o $(OBJDIR)/Chip8Memory.o $(OBJDIR)/Chip8Timers.o $(OBJDIR)/Chip8Cpu.o
 CC = g++
 CFLAGS = -Wall -std=c++11 -c
 # LFLAGS = -Wall -lSDLmain -lSDL -largtable2
@@ -32,7 +32,8 @@ $(OBJDIR)/Chip8Manager.o: $(SRCDIR)/Chip8Manager.cpp $(SRCDIR)/Chip8Manager.hpp 
 $(OBJDIR)/Chip8Timers.o: $(SRCDIR)/Chip8Timers.cpp $(SRCDIR)/Chip8Timers.hpp $(OBJDIR)
 	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Timers.cpp -o $(OBJDIR)/Chip8Timers.o
     
-
+$(OBJDIR)/Chip8Cpu.o: $(SRCDIR)/Chip8Cpu.cpp $(SRCDIR)/Chip8Cpu.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Cpu.cpp -o $(OBJDIR)/Chip8Cpu.o
 
 $(BINDIR):
 	mkdir $(BINDIR)
