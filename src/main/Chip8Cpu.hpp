@@ -50,7 +50,7 @@ private:
 	Chip8Timers* timerManager;
 
 
-	// TODO Chip8Video* videoManager;;
+	// TODO Chip8IO *ioManager;
 public:
 	Chip8Cpu(Chip8Memory &memManager, Chip8Timers &timManager, u16 frequency);
 
