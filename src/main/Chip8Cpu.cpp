@@ -95,6 +95,13 @@ void Chip8Cpu::executeInstruction() {
 	// retrieve the most significant nibble
 	u8 msn = getHighNibble(getHighByte(instruction));
 
+	// least significant nibble
+	u8 lsn = getLowNibble(getLowByte(instruction));
+
+	// get the register nibbles (for instructions that use them)
+	u8 x = getLowNibble(getHighByte(instruction));
+	u8 y = getHighNibble(getLowByte(instruction));
+
 	// on whether or not to increment the program counter
 	bool incProgramCounter = true;
 
@@ -123,7 +130,7 @@ void Chip8Cpu::executeInstruction() {
 			default:
 				// INVALID
 				// TODO error handling
-
+				break;
 			}
 		}
 		else {
@@ -151,7 +158,7 @@ void Chip8Cpu::executeInstruction() {
 		// Call subroutine at nnn.
 		// The interpreter increments the stack pointer, then puts the current PC on the top of the stack.The PC is then set to nnn.
 		pushToStack(PC);
-		
+
 		PC = instruction & 0xFFF;
 
 		incProgramCounter = false;
@@ -161,10 +168,7 @@ void Chip8Cpu::executeInstruction() {
 		//3xkk - SE Vx, byte
 		//Skip next instruction if Vx = kk.
 		//The interpreter compares register Vx to kk, and if they are equal, increments the program counter by 2.
-		u8 reg = getLowNibble(getHighByte(instruction));
-		u8 byteVal = getLowByte(instruction);
-
-		if (V[reg] == byteVal) {
+		if (V[x] == getLowByte(instruction)) {
 			PC += 2;
 		}
 		break;
@@ -174,10 +178,7 @@ void Chip8Cpu::executeInstruction() {
 		//4xkk - SNE Vx, byte
 		//Skip next instruction if Vx != kk.
 		//The interpreter compares register Vx to kk, and if they are not equal, increments the program counter by 2.
-		u8 reg = getLowNibble(getHighByte(instruction));
-		u8 byteVal = getLowByte(instruction);
-
-		if (V[reg] != byteVal) {
+		if (V[x] != getLowByte(instruction)) {
 			PC += 2;
 		}
 		break;
@@ -188,10 +189,7 @@ void Chip8Cpu::executeInstruction() {
 		//The interpreter compares register Vx to register Vy, and if they are equal, increments the program counter by 2.
 
 		// assuming least significant nibble is 0 for now (should this be ignored?)
-		u8 reg1 = getLowNibble(getHighByte(instruction));
-		u8 reg2 = getHighNibble(getLowByte(instruction));
-
-		if (V[reg1] == V[reg2]) {
+		if (V[x] == V[y]) {
 			PC += 2;
 		}
 		break;
@@ -200,35 +198,121 @@ void Chip8Cpu::executeInstruction() {
 		//6xkk - LD Vx, byte
 		//Set Vx = kk.
 		//The interpreter puts the value kk into register Vx.
-		u8 reg = getLowNibble(getHighByte(instruction));
-		u8 byteVal = getLowByte(instruction);
-
-		V[reg] = byteVal;
+		V[x] = getLowByte(instruction);
 		break;
 
 	case 0x7:
 		//7xkk - ADD Vx, byte
 		//Set Vx = Vx + kk.
-		u8 reg = getLowNibble(getHighByte(instruction));
-		u8 byteVal = getLowByte(instruction);
-
-		V[reg] = V[reg] + byteVal;
+		//Adds the value kk to the value of register Vx, then stores the result in Vx.
+		V[x] += getLowByte(instruction);
 		break;
 
 	case 0x8:
+		switch (lsn) {
+		case 0x0:
+			//8xy0 - LD Vx, Vy
+			//Set Vx = Vy.
+			//Stores the value of register Vy in register Vx.
+			V[x] = V[y];
+			break;
+
+		case 0x1:
+			//8xy1 - OR Vx, Vy
+			//Set Vx = Vx OR Vy.
+			//Performs a bitwise OR on the values of Vx and Vy, then stores the result in Vx.A bitwise OR compares the corrseponding bits from two values, and if either bit is 1, then the same bit in the result is also 1. Otherwise, it is 0.
+			V[x] |= V[y];
+			break;
+
+		case 0x2:
+			//8xy2 - AND Vx, Vy
+			//Set Vx = Vx AND Vy.
+			//Performs a bitwise AND on the values of Vx and Vy, then stores the result in Vx.A bitwise AND compares the corrseponding bits from two values, and if both bits are 1, then the same bit in the result is also 1. Otherwise, it is 0.
+			V[x] &= V[y];
+			break;
+
+		case 0x3:
+			//8xy3 - XOR Vx, Vy
+			//Set Vx = Vx XOR Vy.
+			//Performs a bitwise exclusive OR on the values of Vx and Vy, then stores the result in Vx.An exclusive OR compares the corrseponding bits from two values, and if the bits are not both the same, then the corresponding bit in the result is set to 1. Otherwise, it is 0.
+			V[x] ^= V[y];
+			break;
+
+		case 0x4:
+			//8xy4 - ADD Vx, Vy
+			//Set Vx = Vx + Vy, set VF = carry.
+			//The values of Vx and Vy are added together.If the result is greater than 8 bits(i.e., > 255, ) VF is set to 1, otherwise 0. Only the lowest 8 bits of the result are kept, and stored in Vx.
+			u16 result = u16(V[x]) + u16(V[y]);
+
+			V[x] = result & 0xFF;
+
+			V[0xF] = u16(V[x]) == result ?
+				0 : // no overflow
+				1;  // overflow
+
+		case 0x5:
+			//8xy5 - SUB Vx, Vy
+			//Set Vx = Vx - Vy, set VF = NOT borrow.
+			//If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx, and the results stored in Vx.
+			V[0xF] = V[x] > V[y] ?
+				1 : // no underflow
+				0;  // underflow
+
+			// TODO, will this work on all hardware?
+			V[x] = (V[x] - V[y]) & 0xFF;
+			break;
+
+		case 0x6:
+			//8xy6 - SHR Vx{ , Vy }
+			//Set Vx = Vx SHR 1.
+			//If the least - significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
+			V[0xF] = V[x] & 0x1;
+			V[x] >>= 1;
+			break;
+
+		case 0x7:
+			//8xy7 - SUBN Vx, Vy
+			//Set Vx = Vy - Vx, set VF = NOT borrow.
+			//
+			//If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy, and the results stored in Vx.
+			V[0xF] = V[y] > V[x] ?
+				1 : // no underflow
+				0;  // underflow
+
+			// TODO, will this work on all hardware?
+			V[x] = (V[y] - V[x]) & 0xFF;
+			break;
+
+		case 0xE:
+			//8xyE - SHL Vx{ , Vy }
+			//Set Vx = Vx SHL 1.
+			//If the most - significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
+			V[0xF] = ((V[x] & 0x80) == 0x80) ?
+				1 :
+				0;
+
+			V[x] = (V[x] << 1) & 0xFF;
+			break;
+
+		default:
+			// TODO error handling
+			break;
+		}
 		break;
 
 	case 0x9:
-		//9xy0 - SNE Vx, Vy
-		//Skip next instruction if Vx != Vy.
-		//The values of Vx and Vy are compared, and if they are not equal, the program counter is increased by 2.
+		if (lsn == 0) {
 
-		// assuming least significant nibble is 0 for now (should this be ignored?)
-		u8 reg1 = getLowNibble(getHighByte(instruction));
-		u8 reg2 = getHighNibble(getLowByte(instruction));
-
-		if (V[reg1] != V[reg2]) {
-			PC += 2;
+			//9xy0 - SNE Vx, Vy
+			//Skip next instruction if Vx != Vy.
+			//The values of Vx and Vy are compared, and if they are not equal, the program counter is increased by 2.
+			if (V[x] != V[y]) {
+				PC += 2;
+			}
+		}
+		else {
+			// invalid instruction
+			// TODO error handling
 		}
 		break;
 
@@ -243,8 +327,7 @@ void Chip8Cpu::executeInstruction() {
 		//Bnnn - JP V0, addr
 		//Jump to location nnn + V0.
 		//The program counter is set to nnn plus the value of V0.
-		u16 addr = instruction & 0xFFF;
-		PC = addr + u16(V[0]);
+		PC = (instruction & 0xFFF) + u16(V[0]);
 		incProgramCounter = false;
 		break;
 
@@ -287,7 +370,8 @@ void Chip8Cpu::executeInstruction() {
 			//Set Vx = delay timer value.
 			//
 			//The value of DT is placed into Vx.
-
+			u8 reg = getLowNibble(getHighByte(instruction));
+			V[reg] = timerManager->readDelayTimer();
 			break;
 
 		case 0x0A:
@@ -305,7 +389,8 @@ void Chip8Cpu::executeInstruction() {
 			//Set delay timer = Vx.
 			//
 			//DT is set equal to the value of Vx.
-
+			u8 reg = getLowNibble(getHighByte(instruction));
+			timerManager->setDelayTimer(V[reg]);
 			break;
 
 		case 0x18:
@@ -314,7 +399,8 @@ void Chip8Cpu::executeInstruction() {
 			//Set sound timer = Vx.
 			//
 			//ST is set equal to the value of Vx.
-
+			u8 reg = getLowNibble(getHighByte(instruction));
+			timerManager->setSoundTimer(V[reg]);
 			break;
 
 		case 0x1E:
@@ -323,7 +409,10 @@ void Chip8Cpu::executeInstruction() {
 			//Set I = I + Vx.
 			//
 			//The values of I and Vx are added, and the results are stored in I.
+			u8 reg = getLowNibble(getHighByte(instruction));
+			I += V[reg];
 			break;
+
 		case 0x29:
 			//
 			//Fx29 - LD F, Vx
@@ -350,26 +439,26 @@ void Chip8Cpu::executeInstruction() {
 			break;
 
 		case 0x55:
-		//
-		//Fx55 - LD[I], Vx
-		//Store registers V0 through Vx in memory starting at location I.
-		//
-		//The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
-		
+			// Fx55 - LD[I], Vx
+			// Store registers V0 through Vx in memory starting at location I.a
+			// The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
+			for (int i = 0; i <= x; ++i) {
+				memoryManager->writeByte(I + u16(i), V[i]);
+			}
 			break;
 
 		case 0x65:
-		//
-		//Fx65 - LD Vx, [I]
-		//Read registers V0 through Vx from memory starting at location I.
-		//
-		//The interpreter reads values from memory starting at location I into registers V0 through Vx.
-		
+			// Fx65 - LD Vx, [I]
+			// Read registers V0 through Vx from memory starting at location I.
+			// The interpreter reads values from memory starting at location I into registers V0 through Vx.
+			for (int i = 0; i <= x; ++i) {
+				V[i] = memoryManager->readByte(I + u16(i));
+			}
 			break;
 
 		default:
 			// TODO error handling
-	
+			break;
 		}
 
 	}
@@ -392,62 +481,7 @@ void Chip8Cpu::executeInstruction() {
 
 //
 
-//Adds the value kk to the value of register Vx, then stores the result in Vx.
-//
-//8xy0 - LD Vx, Vy
-//Set Vx = Vy.
-//
-//Stores the value of register Vy in register Vx.
-//
-//
-//8xy1 - OR Vx, Vy
-//Set Vx = Vx OR Vy.
-//
-//Performs a bitwise OR on the values of Vx and Vy, then stores the result in Vx.A bitwise OR compares the corrseponding bits from two values, and if either bit is 1, then the same bit in the result is also 1. Otherwise, it is 0.
-//
-//
-//8xy2 - AND Vx, Vy
-//Set Vx = Vx AND Vy.
-//
-//Performs a bitwise AND on the values of Vx and Vy, then stores the result in Vx.A bitwise AND compares the corrseponding bits from two values, and if both bits are 1, then the same bit in the result is also 1. Otherwise, it is 0.
-//
-//
-//8xy3 - XOR Vx, Vy
-//Set Vx = Vx XOR Vy.
-//
-//Performs a bitwise exclusive OR on the values of Vx and Vy, then stores the result in Vx.An exclusive OR compares the corrseponding bits from two values, and if the bits are not both the same, then the corresponding bit in the result is set to 1. Otherwise, it is 0.
-//
-//
-//8xy4 - ADD Vx, Vy
-//Set Vx = Vx + Vy, set VF = carry.
-//
-//The values of Vx and Vy are added together.If the result is greater than 8 bits(i.e., > 255, ) VF is set to 1, otherwise 0. Only the lowest 8 bits of the result are kept, and stored in Vx.
-//
-//
-//8xy5 - SUB Vx, Vy
-//Set Vx = Vx - Vy, set VF = NOT borrow.
-//
-//If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx, and the results stored in Vx.
-//
-//
-//8xy6 - SHR Vx{ , Vy }
-//Set Vx = Vx SHR 1.
-//
-//If the least - significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
-//
-//
-//8xy7 - SUBN Vx, Vy
-//Set Vx = Vy - Vx, set VF = NOT borrow.
-//
-//If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy, and the results stored in Vx.
-//
-//
-//8xyE - SHL Vx{ , Vy }
-//Set Vx = Vx SHL 1.
-//
-//If the most - significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
-//
-//
+
 
 //
 //Ex9E - SKP Vx
