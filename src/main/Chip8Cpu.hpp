@@ -18,12 +18,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef CHIP8CPU
-#define CHIP8CPU
+#ifndef CHIP8CPU_HPP
+#define CHIP8CPU_HPP
 
 #include "Chip8Common.hpp"
 #include "Chip8Memory.hpp"
 #include "Chip8Timers.hpp"
+#include "Chip8IOManager.hpp"
+
 const int NumberOfRegs = 16;
 const int StackDepth = 16;
 
@@ -49,10 +51,10 @@ private:
 	// onto it to set the timers
 	Chip8Timers* timerManager;
 
-
-	// TODO Chip8IO *ioManager;
+	// IO manager that this object does NOT own.
+	Chip8IOManager* ioManager;
 public:
-	Chip8Cpu(Chip8Memory &memManager, Chip8Timers &timManager, u16 frequency);
+	Chip8Cpu(Chip8Memory &memManager, Chip8Timers &timManager, Chip8IOManager &inoutManager, u16 frequency);
 
 	// executes the instruction the PC is pointed at
 	void executeInstruction();
@@ -69,4 +71,4 @@ public:
 	u16 popFromStack(); // pop the address from the stack, return the popped address
 };
 
-#endif // CHIP8CPU
+#endif // CHIP8CPU_HPP

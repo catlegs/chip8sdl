@@ -24,8 +24,9 @@ SOFTWARE.
 TEST_CASE("Chip8Cpu/constructor") {
 	Chip8Memory memManager;
 	Chip8Timers timManager;
+	Chip8IOManager ioManager;
 
-	Chip8Cpu obj(memManager, timManager, 800);
+	Chip8Cpu obj(memManager, timManager, ioManager, 800);
 
 	SECTION("Check initial values") {
 		REQUIRE(obj.readProgCounter() == 0x200);
@@ -35,8 +36,9 @@ TEST_CASE("Chip8Cpu/constructor") {
 TEST_CASE("Chip8Cpu/pushAndPopStack") {
 	Chip8Memory memManager;
 	Chip8Timers timManager;
+	Chip8IOManager ioManager;
 
-	Chip8Cpu obj(memManager, timManager, 800);
+	Chip8Cpu obj(memManager, timManager, ioManager, 800);
 
 	SECTION("Initial stack state") {
 		REQUIRE(obj.readAddressOnStack() == 0);
@@ -61,6 +63,13 @@ TEST_CASE("Chip8Cpu/pushAndPopStack") {
 	}
 }
 
+TEST_CASE("Chip8Cpu/executeInstruction") {
+	Chip8Memory memManager;
+	Chip8Timers timManager;
+	Chip8IOManager ioManager;
+
+	Chip8Cpu obj(memManager, timManager, ioManager, 800);
+}
 //0nnn - SYS addr
 //Jump to a machine code routine at nnn.
 //

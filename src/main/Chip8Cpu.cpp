@@ -20,7 +20,7 @@ SOFTWARE.
 
 #include "Chip8Cpu.hpp"
 
-Chip8Cpu::Chip8Cpu(Chip8Memory &memManager, Chip8Timers &timManager, u16 frequency) {
+Chip8Cpu::Chip8Cpu(Chip8Memory &memManager, Chip8Timers &timManager, Chip8IOManager &inoutManager, u16 frequency) {
 	// zero out the registers
 	for (int i = 0; i < NumberOfRegs; ++i) {
 		V[i] = 0;
@@ -47,6 +47,7 @@ Chip8Cpu::Chip8Cpu(Chip8Memory &memManager, Chip8Timers &timManager, u16 frequen
 	// holds a reference to.
 	memoryManager = &memManager;
 	timerManager = &timManager;
+	ioManager = &inoutManager;
 }
 
 u8 Chip8Cpu::readRegister(u8 n) {
@@ -101,6 +102,9 @@ void Chip8Cpu::executeInstruction() {
 	// get the register nibbles (for instructions that use them)
 	u8 x = getLowNibble(getHighByte(instruction));
 	u8 y = getHighNibble(getLowByte(instruction));
+
+	// result variable needed by some instructions
+	u16 result;
 
 	// on whether or not to increment the program counter
 	bool incProgramCounter = true;
@@ -242,7 +246,7 @@ void Chip8Cpu::executeInstruction() {
 			//8xy4 - ADD Vx, Vy
 			//Set Vx = Vx + Vy, set VF = carry.
 			//The values of Vx and Vy are added together.If the result is greater than 8 bits(i.e., > 255, ) VF is set to 1, otherwise 0. Only the lowest 8 bits of the result are kept, and stored in Vx.
-			u16 result = u16(V[x]) + u16(V[y]);
+			result = u16(V[x]) + u16(V[y]);
 
 			V[x] = result & 0xFF;
 
@@ -370,8 +374,7 @@ void Chip8Cpu::executeInstruction() {
 			//Set Vx = delay timer value.
 			//
 			//The value of DT is placed into Vx.
-			u8 reg = getLowNibble(getHighByte(instruction));
-			V[reg] = timerManager->readDelayTimer();
+			V[x] = timerManager->readDelayTimer();
 			break;
 
 		case 0x0A:
@@ -389,8 +392,7 @@ void Chip8Cpu::executeInstruction() {
 			//Set delay timer = Vx.
 			//
 			//DT is set equal to the value of Vx.
-			u8 reg = getLowNibble(getHighByte(instruction));
-			timerManager->setDelayTimer(V[reg]);
+			timerManager->setDelayTimer(V[x]);
 			break;
 
 		case 0x18:
@@ -399,8 +401,7 @@ void Chip8Cpu::executeInstruction() {
 			//Set sound timer = Vx.
 			//
 			//ST is set equal to the value of Vx.
-			u8 reg = getLowNibble(getHighByte(instruction));
-			timerManager->setSoundTimer(V[reg]);
+			timerManager->setSoundTimer(V[x]);
 			break;
 
 		case 0x1E:
@@ -409,8 +410,7 @@ void Chip8Cpu::executeInstruction() {
 			//Set I = I + Vx.
 			//
 			//The values of I and Vx are added, and the results are stored in I.
-			u8 reg = getLowNibble(getHighByte(instruction));
-			I += V[reg];
+			I += V[x];
 			break;
 
 		case 0x29:
@@ -427,14 +427,15 @@ void Chip8Cpu::executeInstruction() {
 			// Store BCD representation of Vx in memory locations I, I + 1, and I + 2.
 			//
 			// The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I, the tens digit at location I + 1, and the ones digit at location I + 2.
-			u8 reg = getLowNibble(getHighByte(instruction));
-			u8 hundreds = V[reg] / 100;
-			u8 tens = (V[reg] % 100) / 10;
-			u8 ones = V[reg] % 10;
+		{
+			u8 hundreds = V[x] / 100;
+			u8 tens = (V[x] % 100) / 10;
+			u8 ones = V[x] % 10;
 
 			memoryManager->writeByte(I, hundreds);
 			memoryManager->writeByte(I + 1, tens);
 			memoryManager->writeByte(I + 2, ones);
+		}
 
 			break;
 

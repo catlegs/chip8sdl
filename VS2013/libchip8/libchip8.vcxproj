@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\main\Chip8Common.cpp" />
     <ClCompile Include="..\..\src\main\Chip8Cpu.cpp" />
+    <ClCompile Include="..\..\src\main\Chip8IOManager.cpp" />
     <ClCompile Include="..\..\src\main\Chip8Manager.cpp" />
     <ClCompile Include="..\..\src\main\Chip8Memory.cpp" />
     <ClCompile Include="..\..\src\main\Chip8Timers.cpp" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\main\Chip8Common.hpp" />
     <ClInclude Include="..\..\src\main\Chip8Cpu.hpp" />
+    <ClInclude Include="..\..\src\main\Chip8IOManager.hpp" />
     <ClInclude Include="..\..\src\main\Chip8Manager.hpp" />
     <ClInclude Include="..\..\src\main\Chip8Memory.hpp" />
     <ClInclude Include="..\..\src\main\Chip8Timers.hpp" />

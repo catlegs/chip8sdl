@@ -22,8 +22,10 @@ SOFTWARE.
 
 Chip8Manager::Chip8Manager() {
 	memoryManager = new Chip8Memory;
+	ioManager = new Chip8IOManager;
 }
 
 Chip8Manager::~Chip8Manager() {
 	delete memoryManager;
+	delete ioManager;
 }

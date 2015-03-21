@@ -18,9 +18,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef CHIP8TESTSUITE_CPP
-#define CHIP8TESTSUITE_CPP
 #define CATCH_CONFIG_MAIN  // have CATCH provide a main() function
 #include "catch.hpp"
 
-#endif

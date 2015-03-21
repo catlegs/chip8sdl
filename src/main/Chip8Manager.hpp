@@ -22,9 +22,12 @@ SOFTWARE.
 #define CHIP8MANAGER_HPP
 
 #include "Chip8Memory.hpp"
+#include "Chip8IOManager.hpp"
+
 class Chip8Manager {
 private:
 	Chip8Memory* memoryManager;
+	Chip8IOManager* ioManager;
 
 public:
 	Chip8Manager();
