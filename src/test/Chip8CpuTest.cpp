@@ -69,6 +69,36 @@ TEST_CASE("Chip8Cpu/executeInstruction") {
 	Chip8IOManager ioManager;
 
 	Chip8Cpu obj(memManager, timManager, ioManager, 800);
+
+	SECTION("Test JP instuction") {
+		memManager.writeWord(obj.readProgCounter(), 0x1748);
+
+		obj.executeInstruction();
+
+		REQUIRE(obj.readProgCounter() == 0x748);
+	}
+
+	SECTION("Test CALL instruction") {
+		memManager.writeWord(obj.readProgCounter(), 0x2543);
+
+		obj.executeInstruction();
+
+		REQUIRE(obj.readProgCounter() == 0x543);
+		REQUIRE(obj.readStackPointer() == 1);
+	}
+
+	SECTION("Test RET instruction") {
+		memManager.writeWord(obj.readProgCounter(), 0x00EE);
+		obj.pushToStack(0x788);
+
+		obj.executeInstruction();
+		
+		// PC must be 0x788 + 2 to advance past the original
+		//  CALL instruction
+		REQUIRE(obj.readProgCounter() == 0x788 + 2);
+		REQUIRE(obj.readStackPointer() == 0);
+	}
+
 }
 //0nnn - SYS addr
 //Jump to a machine code routine at nnn.
