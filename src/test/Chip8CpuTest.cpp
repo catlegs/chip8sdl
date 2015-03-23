@@ -99,6 +99,133 @@ TEST_CASE("Chip8Cpu/executeInstruction") {
 		REQUIRE(obj.readStackPointer() == 0);
 	}
 
+
+	//3xkk - SE Vx, byte
+	//Skip next instruction if Vx = kk.
+	//
+	//The interpreter compares register Vx to kk, and if they are equal, increments the program counter by 2.
+	//
+	SECTION("Test SE imm instruction") {
+		memManager.writeWord(obj.readProgCounter(), 0x3484);
+
+		u16 initialPC = obj.readProgCounter();
+
+		SECTION("values are equal") {
+			obj.setRegister(4, 0x84);
+
+			obj.executeInstruction();
+
+			REQUIRE(obj.readProgCounter() == initialPC + 4);
+		}
+
+		SECTION("values are not equal") {
+			obj.setRegister(4, 0x83);
+
+			obj.executeInstruction();
+
+			REQUIRE(obj.readProgCounter() == initialPC + 2);
+		}
+	}
+
+	//4xkk - SNE Vx, byte
+	//Skip next instruction if Vx != kk.
+	//
+	//The interpreter compares register Vx to kk, and if they are not equal, increments the program counter by 2.
+	SECTION("Test SNE imm instruction") {
+		memManager.writeWord(obj.readProgCounter(), 0x4484);
+
+		u16 initialPC = obj.readProgCounter();
+
+		SECTION("values are equal") {
+			obj.setRegister(4, 0x84);
+
+			obj.executeInstruction();
+
+			REQUIRE(obj.readProgCounter() == initialPC + 2);
+		}
+
+		SECTION("values are not equal") {
+			obj.setRegister(4, 0x83);
+
+			obj.executeInstruction();
+
+			REQUIRE(obj.readProgCounter() == initialPC + 4);
+		}
+
+	}
+	//
+	//5xy0 - SE Vx, Vy
+	//Skip next instruction if Vx = Vy.
+	//
+	//The interpreter compares register Vx to register Vy, and if they are equal, increments the program counter by 2.
+	
+	SECTION("Test SE Vx,Vy instruction") {
+		memManager.writeWord(obj.readProgCounter(), 0x5AB0);
+
+		u16 initialPC = obj.readProgCounter();
+
+		SECTION("values are equal") {
+			obj.setRegister(0xA, 78);
+			obj.setRegister(0xB, 78);
+
+			obj.executeInstruction();
+
+			REQUIRE(obj.readProgCounter() == initialPC + 4);
+		}
+
+		SECTION("values are not equal") {
+			obj.setRegister(0xA, 78);
+			obj.setRegister(0xB, 79);
+
+			obj.executeInstruction();
+
+			REQUIRE(obj.readProgCounter() == initialPC + 2);
+		}
+	}
+	//
+	//6xkk - LD Vx, byte
+	//Set Vx = kk.
+	//
+	//The interpreter puts the value kk into register Vx.
+	SECTION("Test LD Vx, imm instruction") {
+		memManager.writeWord(obj.readProgCounter(), 0x6E95);
+
+		obj.executeInstruction();
+
+		REQUIRE(obj.readRegister(0xE) == 0x95);
+	}
+
+	//
+	//7xkk - ADD Vx, byte
+	//Set Vx = Vx + kk.
+	SECTION("Test ADD Vx, imm instruction") {
+		memManager.writeWord(obj.readProgCounter(), 0x79FA);
+
+		SECTION("no overflow") {
+			obj.setRegister(9, 5);
+
+			obj.executeInstruction();
+
+			REQUIRE(obj.readRegister(9) == 0xFF);
+		}
+
+		SECTION("overflow, is zero") {
+			obj.setRegister(9, 6);
+
+			obj.executeInstruction();
+
+			REQUIRE(obj.readRegister(9) == 0);
+		}
+
+		SECTION("overflow, is one") {
+			obj.setRegister(9, 7);
+
+			obj.executeInstruction();
+
+			REQUIRE(obj.readRegister(9) == 1);
+		}
+	}
+
 }
 //0nnn - SYS addr
 //Jump to a machine code routine at nnn.
@@ -128,32 +255,7 @@ TEST_CASE("Chip8Cpu/executeInstruction") {
 //The interpreter increments the stack pointer, then puts the current PC on the top of the stack.The PC is then set to nnn.
 //
 //
-//3xkk - SE Vx, byte
-//Skip next instruction if Vx = kk.
-//
-//The interpreter compares register Vx to kk, and if they are equal, increments the program counter by 2.
-//
-//
-//4xkk - SNE Vx, byte
-//Skip next instruction if Vx != kk.
-//
-//The interpreter compares register Vx to kk, and if they are not equal, increments the program counter by 2.
-//
-//
-//5xy0 - SE Vx, Vy
-//Skip next instruction if Vx = Vy.
-//
-//The interpreter compares register Vx to register Vy, and if they are equal, increments the program counter by 2.
-//
-//
-//6xkk - LD Vx, byte
-//Set Vx = kk.
-//
-//The interpreter puts the value kk into register Vx.
-//
-//
-//7xkk - ADD Vx, byte
-//Set Vx = Vx + kk.
+
 //
 //Adds the value kk to the value of register Vx, then stores the result in Vx.
 //

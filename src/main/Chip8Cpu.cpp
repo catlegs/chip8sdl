@@ -56,6 +56,11 @@ u8 Chip8Cpu::readRegister(u8 n) {
 		0;
 }
 
+void Chip8Cpu::setRegister(u8 n, u8 val) {
+	// TODO error handling
+	V[n] = val;
+}
+
 u16 Chip8Cpu::readMemAddrReg() {
 	return I;
 }

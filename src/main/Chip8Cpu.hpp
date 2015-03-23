@@ -59,6 +59,8 @@ public:
 	// executes the instruction the PC is pointed at
 	void executeInstruction();
 
+	void setRegister(u8 n, u8 val);
+
 	// getters for internal register (to inspect state)
 	u8 readRegister(u8 n);
 	u16 readMemAddrReg();
