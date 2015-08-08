@@ -19,43 +19,49 @@ SOFTWARE.
 */
 
 
-#ifndef CHIP8TIMERS_HPP
-#define CHIP8TIMERS_HPP
+#ifndef CHIP8_TIMERS_HPP
+#define CHIP8_TIMERS_HPP
 
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include "Chip8Common.hpp"
 
-class Chip8Timers {
-private:
-	std::mutex timerLock;
+namespace Chip8 {
+	class Timers {
+	private:
+		std::mutex timerLock;
 
-	u8 DT; // delay timer
-	u8 ST; // sound timer
-	bool runThread;
-	std::thread *timerThread;
+		u8 DT; // delay timer
+		u8 ST; // sound timer
+		std::atomic_bool runThread;
+		std::atomic_bool paused; // whether or not the timers are paused
 
-public:
-	// constructor
-	Chip8Timers();
+		std::thread *timerThread;
 
-	// destructor
-	~Chip8Timers();
+	public:
+		Timers();
+		~Timers();
 
-	void setDelayTimer(u8 value);
-	u8 readDelayTimer();
-	void setSoundTimer(u8 value);
-	u8 readSoundTimer();
+		void setDelayTimer(u8 value);
+		u8 readDelayTimer();
+		void setSoundTimer(u8 value);
+		u8 readSoundTimer();
 
-	// checks the status of the timer thread
-	bool isStarted();
+		// checks the status of the timer thread
+		bool isStarted();
+		bool isPaused();
 
-	void startTimers();
-	void stopTimers();
+		void startTimers();
+		void stopTimers();
 
-	// method method that will be ran
-	//  inside the timer updating thread
-	bool updateTimers();
-};
+		void pauseTimers();
+		void unPauseTimers();
+
+		// method method that will be ran
+		//  inside the timer updating thread
+		bool updateTimers();
+	};
+}
 
 #endif

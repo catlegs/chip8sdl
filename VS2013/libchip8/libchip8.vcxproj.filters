@@ -18,19 +18,19 @@
     <ClCompile Include="..\..\src\main\Chip8Common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\main\Chip8Manager.cpp">
+    <ClCompile Include="..\..\src\main\Registers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\main\Chip8Memory.cpp">
+    <ClCompile Include="..\..\src\main\Timers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\main\Chip8Timers.cpp">
+    <ClCompile Include="..\..\src\main\Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\main\Chip8Cpu.cpp">
+    <ClCompile Include="..\..\src\main\Keys.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\main\Chip8IOManager.cpp">
+    <ClCompile Include="..\..\src\main\Instructions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,19 +38,19 @@
     <ClInclude Include="..\..\src\main\Chip8Common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\main\Chip8Cpu.hpp">
+    <ClInclude Include="..\..\src\main\Memory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\main\Chip8Manager.hpp">
+    <ClInclude Include="..\..\src\main\Registers.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\main\Chip8Memory.hpp">
+    <ClInclude Include="..\..\src\main\Timers.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\main\Chip8Timers.hpp">
+    <ClInclude Include="..\..\src\main\Keys.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\main\Chip8IOManager.hpp">
+    <ClInclude Include="..\..\src\main\Instructions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,4 +1,4 @@
-OBJS = $(OBJDIR)/Chip8Common.o $(OBJDIR)/Chip8Manager.o $(OBJDIR)/Chip8Memory.o $(OBJDIR)/Chip8Timers.o $(OBJDIR)/Chip8Cpu.o
+OBJS = $(OBJDIR)/Chip8Common.o $(OBJDIR)/Chip8Manager.o $(OBJDIR)/Chip8Memory.o $(OBJDIR)/Chip8Timers.o $(OBJDIR)/Chip8Cpu.o $(OBJDIR)/Chip8IOManager.o
 CC = g++
 CFLAGS = -Wall -std=c++11 -c
 # LFLAGS = -Wall -lSDLmain -lSDL -largtable2
@@ -18,7 +18,7 @@ TESTEXE = $(BINDIR)/chip8tests
 # build the test executable
 $(TESTEXE): $(OBJS) $(BINDIR)
 	$(CC) $(TESTSRCDIR)/*.cpp $(OBJS) $(TESTCFLAGS) -o $(TESTEXE)
-    
+
 # individual object files
 $(OBJDIR)/Chip8Common.o: $(SRCDIR)/Chip8Common.cpp $(SRCDIR)/Chip8Common.hpp $(OBJDIR)
 	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Common.cpp -o $(OBJDIR)/Chip8common.o
@@ -28,12 +28,15 @@ $(OBJDIR)/Chip8Memory.o: $(SRCDIR)/Chip8Memory.cpp $(SRCDIR)/Chip8Memory.hpp $(O
 
 $(OBJDIR)/Chip8Manager.o: $(SRCDIR)/Chip8Manager.cpp $(SRCDIR)/Chip8Manager.hpp $(OBJDIR)
 	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Manager.cpp -o $(OBJDIR)/Chip8Manager.o
-    
+
 $(OBJDIR)/Chip8Timers.o: $(SRCDIR)/Chip8Timers.cpp $(SRCDIR)/Chip8Timers.hpp $(OBJDIR)
 	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Timers.cpp -o $(OBJDIR)/Chip8Timers.o
-    
+
 $(OBJDIR)/Chip8Cpu.o: $(SRCDIR)/Chip8Cpu.cpp $(SRCDIR)/Chip8Cpu.hpp $(OBJDIR)
 	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Cpu.cpp -o $(OBJDIR)/Chip8Cpu.o
+
+$(OBJDIR)/Chip8IOManager.o: $(SRCDIR)/Chip8IOManager.cpp $(SRCDIR)/Chip8IOManager.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Chip8IOManager.cpp -o $(OBJDIR)/Chip8IOManager.o
 
 $(BINDIR):
 	mkdir $(BINDIR)

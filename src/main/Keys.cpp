@@ -18,14 +18,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef CHIP8IOMANAGER_HPP
-#define CHIP8IOMANAGER_HPP
+#include "Chip8Common.hpp"
+#include "Keys.hpp"
 
-class Chip8IOManager {
-private:
+namespace Chip8 {
+	Keys::Keys() {
+		for (int i = 0; i < NumberOfKeys; ++i) {
+			keyStates[i] = false;
+		}
+	}
 
-public:
+	void Keys::setKeyAsPressed(u8 key) {
+		if (key < NumberOfKeys) {
+			keyStates[key] = true;
+		}
+	}
 
-};
+	void Keys::releaseKey(u8 key) {
+		if (key < NumberOfKeys) {
+			keyStates[key] = false;
+		}
+	}
 
-#endif // CHIP8IOMANAGER_HPP
+	bool Keys::isKeyPressed(u8 key) {
+		if (key < NumberOfKeys) {
+			return keyStates[key];
+		}
+
+		return false;
+	}
+}
