@@ -52,6 +52,7 @@ namespace Chip8 {
 		instructions[op]->executeInstruction(instr);
 	}
 
-
-
+	Opcode decodeWord(u16 word) {
+		return op_unknown;
+	}
 }

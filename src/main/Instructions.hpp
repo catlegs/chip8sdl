@@ -62,7 +62,7 @@ namespace Chip8 {
 
 	class Instruction {
 	public:
-		virtual ~Instruction();
+		virtual ~Instruction() { /* do nothing */ }
 		virtual void executeInstruction(u16 instr) = 0;
 	};
 

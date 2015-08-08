@@ -1,4 +1,4 @@
-OBJS = $(OBJDIR)/Chip8Common.o $(OBJDIR)/Chip8Manager.o $(OBJDIR)/Chip8Memory.o $(OBJDIR)/Chip8Timers.o $(OBJDIR)/Chip8Cpu.o $(OBJDIR)/Chip8IOManager.o
+OBJS = $(OBJDIR)/Chip8Common.o $(OBJDIR)/Instructions.o $(OBJDIR)/Keys.o $(OBJDIR)/Memory.o $(OBJDIR)/Registers.o $(OBJDIR)/Timers.o
 CC = g++
 CFLAGS = -Wall -std=c++11 -c
 # LFLAGS = -Wall -lSDLmain -lSDL -largtable2
@@ -23,20 +23,20 @@ $(TESTEXE): $(OBJS) $(BINDIR)
 $(OBJDIR)/Chip8Common.o: $(SRCDIR)/Chip8Common.cpp $(SRCDIR)/Chip8Common.hpp $(OBJDIR)
 	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Common.cpp -o $(OBJDIR)/Chip8common.o
 
-$(OBJDIR)/Chip8Memory.o: $(SRCDIR)/Chip8Memory.cpp $(SRCDIR)/Chip8Memory.hpp $(OBJDIR)
-	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Memory.cpp -o $(OBJDIR)/Chip8Memory.o
+$(OBJDIR)/Instructions.o: $(SRCDIR)/Instructions.cpp $(SRCDIR)/Instructions.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Instructions.cpp -o $(OBJDIR)/Instructions.o
 
-$(OBJDIR)/Chip8Manager.o: $(SRCDIR)/Chip8Manager.cpp $(SRCDIR)/Chip8Manager.hpp $(OBJDIR)
-	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Manager.cpp -o $(OBJDIR)/Chip8Manager.o
+$(OBJDIR)/Keys.o: $(SRCDIR)/Keys.cpp $(SRCDIR)/Keys.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Keys.cpp -o $(OBJDIR)/Keys.o
 
-$(OBJDIR)/Chip8Timers.o: $(SRCDIR)/Chip8Timers.cpp $(SRCDIR)/Chip8Timers.hpp $(OBJDIR)
-	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Timers.cpp -o $(OBJDIR)/Chip8Timers.o
+$(OBJDIR)/Memory.o: $(SRCDIR)/Memory.cpp $(SRCDIR)/Memory.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Memory.cpp -o $(OBJDIR)/Memory.o
 
-$(OBJDIR)/Chip8Cpu.o: $(SRCDIR)/Chip8Cpu.cpp $(SRCDIR)/Chip8Cpu.hpp $(OBJDIR)
-	$(CC) $(CFLAGS) $(SRCDIR)/Chip8Cpu.cpp -o $(OBJDIR)/Chip8Cpu.o
+$(OBJDIR)/Registers.o: $(SRCDIR)/Registers.cpp $(SRCDIR)/Registers.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Registers.cpp -o $(OBJDIR)/Registers.o
 
-$(OBJDIR)/Chip8IOManager.o: $(SRCDIR)/Chip8IOManager.cpp $(SRCDIR)/Chip8IOManager.hpp $(OBJDIR)
-	$(CC) $(CFLAGS) $(SRCDIR)/Chip8IOManager.cpp -o $(OBJDIR)/Chip8IOManager.o
+$(OBJDIR)/Timers.o: $(SRCDIR)/Timers.cpp $(SRCDIR)/Timers.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Timers.cpp -o $(OBJDIR)/Timers.o
 
 $(BINDIR):
 	mkdir $(BINDIR)
