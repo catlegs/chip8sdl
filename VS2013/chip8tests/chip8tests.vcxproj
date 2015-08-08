@@ -147,10 +147,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\test\Chip8CommonTest.cpp" />
-    <ClCompile Include="..\..\src\test\Chip8CpuTest.cpp" />
-    <ClCompile Include="..\..\src\test\Chip8MemoryTest.cpp" />
+    <ClCompile Include="..\..\src\test\RegistersTest.cpp" />
+    <ClCompile Include="..\..\src\test\MemoryTest.cpp" />
     <ClCompile Include="..\..\src\test\Chip8TestSuite.cpp" />
-    <ClCompile Include="..\..\src\test\Chip8TimersTest.cpp" />
+    <ClCompile Include="..\..\src\test\TimersTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\libchip8\libchip8.vcxproj">

@@ -18,16 +18,16 @@
     <ClCompile Include="..\..\src\test\Chip8CommonTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\test\Chip8MemoryTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\test\Chip8TestSuite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\test\Chip8TimersTest.cpp">
+    <ClCompile Include="..\..\src\test\RegistersTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\test\Chip8CpuTest.cpp">
+    <ClCompile Include="..\..\src\test\MemoryTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\test\TimersTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

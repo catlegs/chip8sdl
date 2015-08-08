@@ -19,29 +19,35 @@ SOFTWARE.
 */
 
 #include "catch.hpp"
-#include "Chip8Memory.hpp"
+#include "Chip8Common.hpp"
+#include "Memory.hpp"
 #include <iostream>
 
-TEST_CASE("Chip8Memory/constructor") {
-	Chip8Memory obj;
+using Chip8::Memory;
+using Chip8::MemorySize;
+using Chip8::u8;
+using Chip8::u16;
+
+TEST_CASE("Memory/constructor") {
+	Memory obj;
 
 	// assert that first and last memory
 	//   location are set to zero
 	REQUIRE(obj.readByte(0) == 0);
-	REQUIRE(obj.readByte(Chip8MemorySize - 1) == 0);
+	REQUIRE(obj.readByte(MemorySize - 1) == 0);
 }
 
-TEST_CASE("Chip8Memory/readByte") {
-	Chip8Memory obj;
+TEST_CASE("Memory/readByte") {
+	Memory obj;
 
 	SECTION("out of bounds, should return 0") {
 		// fill memory with 0x1F
-		for (int i = 0; i < Chip8MemorySize; ++i) {
+		for (int i = 0; i < MemorySize; ++i) {
 			obj.writeByte(i, 0x1F);
 		}
 
 		// execute
-		u8 result = obj.readByte(Chip8MemorySize);
+		u8 result = obj.readByte(MemorySize);
 
 		// assert
 		REQUIRE(result == 0);
@@ -59,12 +65,12 @@ TEST_CASE("Chip8Memory/readByte") {
 	}
 }
 
-TEST_CASE("Chip8Memory/writeByte") {
-	Chip8Memory obj;
+TEST_CASE("Memory/writeByte") {
+	Memory obj;
 
 	SECTION("out of bounds, write should fail") {
 		// write out of bounds
-		bool result = obj.writeByte(Chip8MemorySize, 0xFF);
+		bool result = obj.writeByte(MemorySize, 0xFF);
 
 		REQUIRE(result == false);
 	}
@@ -80,17 +86,17 @@ TEST_CASE("Chip8Memory/writeByte") {
 }
 
 
-TEST_CASE("Chip8Memory/readWord") {
-	Chip8Memory obj;
+TEST_CASE("Memory/readWord") {
+	Memory obj;
 
 	SECTION("out of bounds, should return 0") {
 		// fill memory with 0x1F
-		for (int i = 0; i < Chip8MemorySize; ++i) {
+		for (int i = 0; i < MemorySize; ++i) {
 			obj.writeByte(i, 0x1F);
 		}
 
 		// execute
-		u16 result = obj.readWord(Chip8MemorySize - 1);
+		u16 result = obj.readWord(MemorySize - 1);
 
 		// assert
 		REQUIRE(result == 0);

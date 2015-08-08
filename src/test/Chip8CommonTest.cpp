@@ -23,6 +23,15 @@ SOFTWARE.
 
 #include <thread>
 #include <chrono>
+
+using Chip8::invokeFuncAtInterval;
+using Chip8::getHighByte;
+using Chip8::getHighNibble;
+using Chip8::getLowByte;
+using Chip8::getLowNibble;
+using Chip8::u8;
+using Chip8::u16;
+
 // test function + values for the function we're testing
 bool testFuncBreakVal;
 int testFuncCountVal;

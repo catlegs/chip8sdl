@@ -19,45 +19,42 @@ SOFTWARE.
 */
 
 #include "catch.hpp"
-#include "Chip8Timers.hpp"
-#include <iostream>
+#include "Chip8Common.hpp"
+#include "Registers.hpp"
 
-#include <thread>
-#include <chrono>
-#include <iostream>
+using Chip8::Registers;
+using Chip8::u16;
+using Chip8::u8;
+TEST_CASE("Registers/constructor") {
+	Registers obj;
 
-TEST_CASE("Chip8Timers/constructor") {
-	Chip8Timers obj;
-
-	SECTION("Delay timer should be zero") {
-		u8 result = obj.readDelayTimer();
-
-		REQUIRE(result == 0);
-	}
-
-	SECTION("Sound timer should be zero") {
-		u8 result = obj.readSoundTimer();
-
-		REQUIRE(result == 0);
-	}
-
-	SECTION("Thread should not be started") {
-		bool result = obj.isStarted();
-
-		REQUIRE(result == false);
+	SECTION("Check initial values") {
+		REQUIRE(obj.getProgCounter() == 0x200);
 	}
 }
 
-TEST_CASE("Chip8Timers/updateTimers") {
-	Chip8Timers obj;
+TEST_CASE("Chip8Cpu/pushAndPopStack") {
+	Registers obj;
 
-	SECTION("timers are set to zero") {
-		obj.updateTimers();
+	SECTION("Initial stack state") {
+		REQUIRE(obj.readAddressOnStack() == 0);
+		REQUIRE(obj.readStackPointer() == 0);
+	}
 
-		u8 DTresult = obj.readDelayTimer();
-		u8 STresult = obj.readSoundTimer();
+	SECTION("Check push stack") {
+		obj.pushToStack(0xDEAD);
+		REQUIRE(obj.readAddressOnStack() == 0xDEAD);
+		REQUIRE(obj.readStackPointer() == 1);
+	}
 
-		REQUIRE(DTresult == 0);
-		REQUIRE(STresult == 0);
+	SECTION("Check pop stack") {
+		obj.pushToStack(0xDEAD);
+
+		REQUIRE(obj.readStackPointer() == 1);
+
+		u16 result = obj.popFromStack();
+
+		REQUIRE(result == 0xDEAD);
+		REQUIRE(obj.readStackPointer() == 0);
 	}
 }
