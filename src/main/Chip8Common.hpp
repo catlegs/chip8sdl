@@ -23,6 +23,7 @@ SOFTWARE.
 
 #include <cinttypes>
 #include <functional>
+#include <chrono>
 
 namespace Chip8 {
 	// define width-based integer types
@@ -33,15 +34,19 @@ namespace Chip8 {
 	typedef uint_least32_t u32;
 	typedef int_least32_t s32;
 
-	// invokes a passed in function at the specified times per second until it returns false
-	// should ALWAYS be passed into a thread
-	void invokeFuncAtInterval(std::function<bool()> func, unsigned long timesPerSecond);
-
 	// functions for woking with bytes, words, and nibbles
 	inline u8 getHighNibble(u8 byte) { return byte >> 4; }
 	inline u8 getLowNibble(u8 byte) { return byte & 0xF; }
 	inline u8 getHighByte(u16 word) { return word >> 8; }
 	inline u8 getLowByte(u16 word) { return word & 0xFF; }
+
+	// invokes a passed in function at the specified times per second until it returns false
+	// should ALWAYS be passed into a thread
+	void invokeFuncAtInterval(std::function<bool()> func, unsigned long timesPerSecond);
+
+	u8** allocate2dBuffer(unsigned int width, unsigned int height);
+	void destroy2dBuffer(u8** buf, unsigned int width);
+	void copy2dBuffer(u8** source, u8** dest, unsigned int width, unsigned int height);
 }
 
 #endif // CHIP8_COMMON

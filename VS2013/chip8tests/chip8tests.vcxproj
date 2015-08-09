@@ -151,6 +151,7 @@
     <ClCompile Include="..\..\src\test\MemoryTest.cpp" />
     <ClCompile Include="..\..\src\test\Chip8TestSuite.cpp" />
     <ClCompile Include="..\..\src\test\TimersTest.cpp" />
+    <ClCompile Include="..\..\src\test\VideoTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\libchip8\libchip8.vcxproj">

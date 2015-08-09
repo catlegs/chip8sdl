@@ -1,4 +1,4 @@
-OBJS = $(OBJDIR)/Chip8Common.o $(OBJDIR)/Instructions.o $(OBJDIR)/Keys.o $(OBJDIR)/Memory.o $(OBJDIR)/Registers.o $(OBJDIR)/Timers.o
+OBJS = $(OBJDIR)/Chip8Common.o $(OBJDIR)/Instructions.o $(OBJDIR)/Keys.o $(OBJDIR)/Memory.o $(OBJDIR)/Registers.o $(OBJDIR)/Timers.o $(OBJDIR)/Video.o
 CC = g++
 CFLAGS = -Wall -std=c++11 -c
 # LFLAGS = -Wall -lSDLmain -lSDL -largtable2
@@ -37,6 +37,9 @@ $(OBJDIR)/Registers.o: $(SRCDIR)/Registers.cpp $(SRCDIR)/Registers.hpp $(OBJDIR)
 
 $(OBJDIR)/Timers.o: $(SRCDIR)/Timers.cpp $(SRCDIR)/Timers.hpp $(OBJDIR)
 	$(CC) $(CFLAGS) $(SRCDIR)/Timers.cpp -o $(OBJDIR)/Timers.o
+
+$(OBJDIR)/Video.o: $(SRCDIR)/Video.cpp $(SRCDIR)/Video.hpp $(OBJDIR)
+	$(CC) $(CFLAGS) $(SRCDIR)/Video.cpp -o $(OBJDIR)/Video.o
 
 $(BINDIR):
 	mkdir $(BINDIR)

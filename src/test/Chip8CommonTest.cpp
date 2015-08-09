@@ -29,6 +29,9 @@ using Chip8::getHighByte;
 using Chip8::getHighNibble;
 using Chip8::getLowByte;
 using Chip8::getLowNibble;
+using Chip8::allocate2dBuffer;
+using Chip8::destroy2dBuffer;
+using Chip8::copy2dBuffer;
 using Chip8::u8;
 using Chip8::u16;
 
@@ -98,5 +101,28 @@ TEST_CASE("Chip8Common/byteWordAndNibbleOperations", "[inline]") {
 		u8 result = getLowByte(0xDEAD);
 
 		REQUIRE(result == 0xAD);
+	}
+}
+
+TEST_CASE("Chip8Common/bufferOperations") {
+	u8** buffer;
+
+	// allocate the buffer
+	buffer = allocate2dBuffer(2, 10);
+	buffer[1][9] = 8;
+
+	REQUIRE(buffer[1][9] == 8);
+
+	SECTION("destroyBuffer/should succeed") {
+		destroy2dBuffer(buffer, 2);
+		// cannot dereference since dereferencing an invalid pointer is undefined
+	}
+
+	SECTION("copyBuffer/should hold the same values at different addresses") {
+		u8** bufferCopy = allocate2dBuffer(2, 10);
+		copy2dBuffer(buffer, bufferCopy, 2, 10);
+
+		REQUIRE(bufferCopy[1][9] == 8);
+		REQUIRE(&buffer[1][9] != &bufferCopy[1][9]);
 	}
 }

@@ -134,6 +134,7 @@
     <ClCompile Include="..\..\src\main\Memory.cpp" />
     <ClCompile Include="..\..\src\main\Timers.cpp" />
     <ClCompile Include="..\..\src\main\Registers.cpp" />
+    <ClCompile Include="..\..\src\main\Video.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\main\Chip8Common.hpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="..\..\src\main\Instructions.hpp" />
     <ClInclude Include="..\..\src\main\Memory.hpp" />
     <ClInclude Include="..\..\src\main\Registers.hpp" />
+    <ClInclude Include="..\..\src\main\Video.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
