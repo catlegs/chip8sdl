@@ -40,7 +40,18 @@ namespace Chip8 {
 	// draw a sprite to the screen, if there was a collision, then return true.
 	// if there was no collision, then return false.
 	bool Video::drawSprite(u8** spriteData, unsigned int spriteWidth, unsigned int spriteHeight, unsigned int posX, unsigned int posY) {
-		return false; // TODO implement
+		bool collision = false;
+		for (unsigned int colPos = posX; colPos < posX + spriteWidth; ++colPos) {
+			for (unsigned int rowPos = posY; rowPos < posY + spriteHeight; ++rowPos) {
+				u8* ptr = &backBuffer[colPos][rowPos];
+				u8 oldVal = *ptr;
+				*ptr = oldVal ^ spriteData[colPos][rowPos];
+				if (oldVal != *ptr) {
+					collision = true;
+				}
+			}
+		}
+		return collision;
 	}
 
 	void Video::displayToScreen() {
