@@ -22,6 +22,9 @@ SOFTWARE.
 #include "Chip8Common.hpp"
 #include "Video.hpp"
 
+// for memcpy
+#include <cstring>
+
 using Chip8::Video;
 using Chip8::VideoMode;
 using Chip8::u8;
@@ -29,40 +32,61 @@ using Chip8::u8;
 // driver implementation that simply copys the buffer
 class TestVideoDriver : public Chip8::VideoDriver {
 public:
-	u8** outputBuf;
+	u8* outputBuf;
 	VideoMode mode;
 
 	TestVideoDriver(VideoMode vidMode) {
 		const Chip8::ScreenDimensions* dims = &Chip8::VideoModeDimensions[vidMode];
-		outputBuf = Chip8::allocate2dBuffer(dims->width, dims->height);
+		outputBuf = new u8[dims->width * dims->height];
 		mode = vidMode;
 	}
 	
 	~TestVideoDriver() {
-		const Chip8::ScreenDimensions* dims = &Chip8::VideoModeDimensions[mode];
-		Chip8::destroy2dBuffer(outputBuf, dims->width);
+		delete[] outputBuf;
 	}
 
-	void updateScreen(u8** buf, VideoMode vidMode) {
+	void updateScreen(u8* buf, VideoMode vidMode) {
 		const Chip8::ScreenDimensions* dims = &Chip8::VideoModeDimensions[vidMode];
 		
 		if (mode != vidMode) {
-			Chip8::destroy2dBuffer(outputBuf, dims->width);
-			outputBuf = Chip8::allocate2dBuffer(dims->width, dims->height);
+			delete[] outputBuf;
+			outputBuf = new u8[dims->width * dims->height];
 			mode = vidMode;
 		}
 
 		// copy the buffer
-		Chip8::copy2dBuffer(buf, outputBuf, dims->width, dims->height);
+		memcpy(outputBuf, buf, sizeof(u8) * dims->width * dims->height);
 	}
 };
 
 // TODO WRITE TESTS
-TEST_CASE("Video/constructor") {
+TEST_CASE("Video/spriteDrawing") {
 	TestVideoDriver driver(Chip8::vid_CHIP8);
 	Video obj(&driver, Chip8::vid_CHIP8);
 
-	SECTION("not a test at all") {
-		REQUIRE(0 == 0);
+	u8 simpleSprite[3 * 3] =
+	{
+		0, 1, 0,
+		1, 0, 1,
+		1, 0, 1
+	};
+	
+	SECTION("checkToMakeSureItIsFlushedToScreen") {
+		obj.drawSprite(simpleSprite, 3, 3, 12, 15);
+		obj.displayToScreen();
+
+		// first row
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 12, 15) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 13, 15) == 1);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 14, 15) == 0);
+		// second row
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 12, 16) == 1);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 13, 16) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 14, 16) == 1);
+		// third row
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 12, 17) == 1);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 13, 17) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 14, 17) == 1);
 	}
+
 }

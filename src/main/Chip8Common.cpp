@@ -42,25 +42,4 @@ namespace Chip8 {
 			std::this_thread::sleep_until(nextInvocation);
 		}
 	}
-
-	u8** allocate2dBuffer(unsigned int width, unsigned int height) {
-		u8** buf = new u8*[width];
-		for (unsigned int i = 0; i < width; ++i) {
-			buf[i] = new u8[height];
-		}
-		return buf;
-	}
-
-	void destroy2dBuffer(u8** buf, unsigned int width) {
-		for (unsigned int i = 0; i < width; ++i) {
-			delete[] buf[i];
-		}
-		delete[] buf;
-	}
-
-	void copy2dBuffer(u8** source, u8** dest, unsigned int width, unsigned int height) {
-		for (unsigned int i = 0; i < width; ++i) {
-			memcpy(dest[i], source[i], sizeof(u8) * height);
-		}
-	}
 }

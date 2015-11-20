@@ -43,10 +43,6 @@ namespace Chip8 {
 	// invokes a passed in function at the specified times per second until it returns false
 	// should ALWAYS be passed into a thread
 	void invokeFuncAtInterval(std::function<bool()> func, unsigned long timesPerSecond);
-
-	u8** allocate2dBuffer(unsigned int width, unsigned int height);
-	void destroy2dBuffer(u8** buf, unsigned int width);
-	void copy2dBuffer(u8** source, u8** dest, unsigned int width, unsigned int height);
 }
 
 #endif // CHIP8_COMMON

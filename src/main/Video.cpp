@@ -8,21 +8,22 @@ namespace Chip8 {
 	void Video::allocateBuffers(VideoMode vidMode) {
 		// grab the dimensions for this video mode
 		const ScreenDimensions* dims = &VideoModeDimensions[vidMode];
-		backBuffer = allocate2dBuffer(dims->width, dims->height);
-		displayBuffer = allocate2dBuffer(dims->width, dims->height);
+		unsigned int bufSize = dims->width * dims->height;
+		backBuffer = new u8[bufSize];
+		displayBuffer = new u8[bufSize];
+		memset(backBuffer, 0, sizeof(u8) * bufSize);
+		memset(displayBuffer, 0, sizeof(u8) * bufSize);
 	}
 
-	void Video::destroyBuffers(VideoMode vidMode) {
-		// grab the dimensions for this video mode
-		const ScreenDimensions* dims = &VideoModeDimensions[vidMode];
-		destroy2dBuffer(backBuffer, dims->width);
-		destroy2dBuffer(displayBuffer, dims->width);
+	void Video::destroyBuffers() {
+		delete[] backBuffer;
+		delete[] displayBuffer;
 	}
 
 	void Video::pushBackBufferToDiplayBuffer() {
 		bufferLock.lock();
 		const ScreenDimensions* dims = &VideoModeDimensions[mode];
-		copy2dBuffer(backBuffer, displayBuffer, dims->width, dims->height);
+		memcpy(displayBuffer, backBuffer, sizeof(u8) * dims->width * dims->height);
 		bufferLock.unlock();
 	}
 
@@ -33,24 +34,36 @@ namespace Chip8 {
 	}
 	
 	Video::~Video() {
-		destroyBuffers(mode);
+		destroyBuffers();
 	}
 
 	//inline void setPixelAtPosition(u8 pixVal, unsigned int width, unsigned int height);
 	// draw a sprite to the screen, if there was a collision, then return true.
 	// if there was no collision, then return false.
-	bool Video::drawSprite(u8** spriteData, unsigned int spriteWidth, unsigned int spriteHeight, unsigned int posX, unsigned int posY) {
+	bool Video::drawSprite(u8* spriteData, unsigned int spriteWidth, unsigned int spriteHeight, unsigned int posX, unsigned int posY) {
+		const ScreenDimensions* dims = &VideoModeDimensions[mode];
 		bool collision = false;
-		for (unsigned int colPos = posX; colPos < posX + spriteWidth; ++colPos) {
-			for (unsigned int rowPos = posY; rowPos < posY + spriteHeight; ++rowPos) {
-				u8* ptr = &backBuffer[colPos][rowPos];
+		
+		bufferLock.lock();
+		u8* spritePtr = spriteData;
+		u8* ptr = &backBuffer[dims->width * posY + posX];
+		for (unsigned int i = 0; i < spriteHeight; ++i) {
+			for (unsigned int j = 0; j < spriteWidth; ++j) {
 				u8 oldVal = *ptr;
-				*ptr = oldVal ^ spriteData[colPos][rowPos];
-				if (oldVal != *ptr) {
+				*ptr = (*ptr) ^ (*spritePtr);
+
+				if ((*ptr) == 0 && (*spritePtr) != 0) {
 					collision = true;
 				}
+				// increment the pointers by one
+				++spritePtr;
+				++ptr;
 			}
+			// go to the next column
+			ptr += dims->width - spriteWidth;
 		}
+		bufferLock.unlock();
+
 		return collision;
 	}
 
@@ -63,7 +76,7 @@ namespace Chip8 {
 
 	void Video::changeVideoMode(VideoMode vidMode) {
 		bufferLock.lock();
-		destroyBuffers(mode);
+		destroyBuffers();
 		allocateBuffers(vidMode);
 		mode = vidMode;
 		bufferLock.unlock();
