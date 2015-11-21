@@ -71,9 +71,14 @@ TEST_CASE("Video/spriteDrawing") {
 		1, 0, 1
 	};
 	
+	
+	bool collision = obj.drawSprite(simpleSprite, 3, 3, 12, 15);
+
 	SECTION("checkToMakeSureItIsFlushedToScreen") {
-		obj.drawSprite(simpleSprite, 3, 3, 12, 15);
 		obj.displayToScreen();
+		
+		// no collision should happen
+		REQUIRE(collision == false);
 
 		// first row
 		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 12, 15) == 0);
@@ -89,4 +94,48 @@ TEST_CASE("Video/spriteDrawing") {
 		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 14, 17) == 1);
 	}
 
+	SECTION("checkToMakeSureCollisionAndXORingWorks") {
+		u8 allOnes[3 * 3] =
+		{
+			1, 1, 1,
+			1, 1, 1,
+			1, 1, 1
+		};
+
+		collision = obj.drawSprite(allOnes, 3, 3, 12, 15);
+		obj.displayToScreen();
+
+		REQUIRE(collision == true);
+
+		// first row
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 12, 15) == 1);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 13, 15) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 14, 15) == 1);
+		// second row
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 12, 16) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 13, 16) == 1);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 14, 16) == 0);
+		// third row
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 12, 17) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 13, 17) == 1);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 14, 17) == 0);
+	}
+
+	SECTION("checkToMakeSureClearScreenWorks") {
+		obj.clearScreen();
+		obj.displayToScreen();
+
+		// first row
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 12, 15) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 13, 15) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 14, 15) == 0);
+		// second row
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 12, 16) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 13, 16) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 14, 16) == 0);
+		// third row
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 12, 17) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 13, 17) == 0);
+		REQUIRE(Chip8::getElementAt(driver.outputBuf, Chip8::vid_CHIP8, 14, 17) == 0);
+	}
 }

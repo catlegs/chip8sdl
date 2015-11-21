@@ -6,13 +6,16 @@
 namespace Chip8 {
 	// private methods
 	void Video::allocateBuffers(VideoMode vidMode) {
-		// grab the dimensions for this video mode
+		// grab the dimensions for this video mode and
+		// calculate how large the buffers should be
 		const ScreenDimensions* dims = &VideoModeDimensions[vidMode];
 		unsigned int bufSize = dims->width * dims->height;
+
+		// allocate memory for buffers and zero them out
 		backBuffer = new u8[bufSize];
 		displayBuffer = new u8[bufSize];
-		memset(backBuffer, 0, sizeof(u8) * bufSize);
-		memset(displayBuffer, 0, sizeof(u8) * bufSize);
+		memset(backBuffer, PIXEL_OFF, sizeof(u8) * bufSize);
+		memset(displayBuffer, PIXEL_OFF, sizeof(u8) * bufSize);
 	}
 
 	void Video::destroyBuffers() {
@@ -37,7 +40,6 @@ namespace Chip8 {
 		destroyBuffers();
 	}
 
-	//inline void setPixelAtPosition(u8 pixVal, unsigned int width, unsigned int height);
 	// draw a sprite to the screen, if there was a collision, then return true.
 	// if there was no collision, then return false.
 	bool Video::drawSprite(u8* spriteData, unsigned int spriteWidth, unsigned int spriteHeight, unsigned int posX, unsigned int posY) {
@@ -49,12 +51,12 @@ namespace Chip8 {
 		u8* ptr = &backBuffer[dims->width * posY + posX];
 		for (unsigned int i = 0; i < spriteHeight; ++i) {
 			for (unsigned int j = 0; j < spriteWidth; ++j) {
-				u8 oldVal = *ptr;
 				*ptr = (*ptr) ^ (*spritePtr);
 
-				if ((*ptr) == 0 && (*spritePtr) != 0) {
+				if ((*ptr) == PIXEL_OFF && (*spritePtr) == PIXEL_ON) {
 					collision = true;
 				}
+
 				// increment the pointers by one
 				++spritePtr;
 				++ptr;
@@ -74,6 +76,16 @@ namespace Chip8 {
 		driver->updateScreen(displayBuffer, mode);
 	}
 
+	void Video::clearScreen() {
+		bufferLock.lock();
+		// we only need to zero out the back buffer, as
+		// the back buffer is flushed to the display buffer before
+		// sending the display buffer to the video driver
+		const ScreenDimensions* dims = &VideoModeDimensions[mode];
+		unsigned int bufSize = dims->width * dims->height;
+		memset(backBuffer, PIXEL_OFF, sizeof(u8) * bufSize);
+		bufferLock.unlock();
+	}
 	void Video::changeVideoMode(VideoMode vidMode) {
 		bufferLock.lock();
 		destroyBuffers();
